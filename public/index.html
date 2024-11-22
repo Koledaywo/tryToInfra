@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление фильма</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Добавить фильм</h1>
+    <form id="movieForm">
+        <label for="movieTitle">Название фильма:</label>
+        <input type="text" id="movieTitle" name="movieTitle" required>
+
+        <label for="movieDescription">Описание:</label>
+        <textarea id="movieDescription" name="movieDescription" required></textarea>
+
+        <button type="submit">Добавить фильм</button>
+    </form>
+
+    <h2>Список фильмов</h2>
+    <ul id="movieList"></ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
