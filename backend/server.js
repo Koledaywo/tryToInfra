@@ -1,39 +1,41 @@
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
-const PORT = 5000;
-
-// Используем middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Данные о голосах (в памяти)
-let options = [
-    { id: 1, name: "Option 1", votes: 0 },
-    { id: 2, name: "Option 2", votes: 0 },
-    { id: 3, name: "Option 3", votes: 0 },
-];
+// Временное хранилище фильмов
+let movies = [];
 
-// Получить текущие результаты голосования
-app.get('/api/results', (req, res) => {
-    res.json(options);
+// API маршруты
+app.get('/movies', (req, res) => {
+    res.json(movies);
 });
 
-// Проголосовать за опцию
-app.post('/api/vote', (req, res) => {
-    const { id } = req.body;
-    const option = options.find(opt => opt.id === id);
-    if (option) {
-        option.votes += 1;
-        res.status(200).json({ message: 'Vote counted', option });
-    } else {
-        res.status(404).json({ message: 'Option not found' });
-    }
+app.post('/movies', (req, res) => {
+    const newMovie = { id: Date.now(), title: req.body.title };
+    movies.push(newMovie);
+    res.json(newMovie);
+});
+
+app.delete('/movies/:id', (req, res) => {
+    movies = movies.filter((movie) => movie.id !== parseInt(req.params.id, 10));
+    res.status(204).end();
+});
+
+// Отдача статических файлов React
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Обработка всех остальных маршрутов и возврат index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Запуск сервера
+const PORT = 3001;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Сервер запущен на порту ${PORT}`);
 });
