@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавление фильма</title>
+    <title>Управление фильмами</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Добавить фильм</h1>
-    <form id="movieForm">
+    <h1>Управление фильмами</h1>
+
+    <form id="movieForm" aria-label="Форма добавления фильма">
         <label for="movieTitle">Название фильма:</label>
-        <input type="text" id="movieTitle" name="movieTitle" required>
+        <input type="text" id="movieTitle" name="movieTitle" required aria-label="Название фильма">
 
         <label for="movieDescription">Описание:</label>
-        <textarea id="movieDescription" name="movieDescription" required></textarea>
+        <textarea id="movieDescription" name="movieDescription" required aria-label="Описание фильма"></textarea>
 
-        <button type="submit">Добавить фильм</button>
+        <button type="submit" aria-label="Добавить фильм">Добавить фильм</button>
     </form>
 
     <h2>Список фильмов</h2>
-    <ul id="movieList"></ul>
+    <ul id="movieList" aria-label="Список фильмов"></ul>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

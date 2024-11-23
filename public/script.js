@@ -1,45 +1,46 @@
-// Загружаем фильмы с сервера
-function loadMovies() {
+document.addEventListener('DOMContentLoaded', () => {
+    const movieForm = document.getElementById('movieForm');
+    const movieList = document.getElementById('movieList');
+
+    // Загрузка фильмов при старте
+    fetchMovies();
+
+    // Обработчик отправки формы
+    movieForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const title = document.getElementById('movieTitle').value.trim();
+        const description = document.getElementById('movieDescription').value.trim();
+
+        if (title && description) {
+            addMovie({ title, description });
+            movieForm.reset();
+        }
+    });
+});
+
+// Получение списка фильмов с сервера
+function fetchMovies() {
     fetch('/api/movies')
-        .then(response => response.json())
-        .then(movies => {
-            if (document.getElementById('movieList')) {
-                displayMovies(movies); // На странице добавления
-            }
-            if (document.getElementById('movieRatingList')) {
-                displayMoviesForRating(movies); // На странице оценки
-            }
-        })
-        .catch(error => console.error('Ошибка загрузки фильмов:', error));
+        .then((response) => response.json())
+        .then((movies) => displayMovies(movies))
+        .catch((error) => console.error('Ошибка при получении списка фильмов:', error));
 }
 
-// Отображаем фильмы на странице добавления
+// Отображение списка фильмов
 function displayMovies(movies) {
     const movieList = document.getElementById('movieList');
-    movieList.innerHTML = '';  // Очистка текущего списка
-
-    if (movies.length > 0) {
-        movies.slice(0, 5).forEach(movie => {
-            const li = document.createElement('li');
-            li.textContent = `${movie.title}: ${movie.description}`;
-            movieList.appendChild(li);
-        });
-    } else {
-        const li = document.createElement('li');
-        li.textContent = "Нет фильмов. Добавьте новый фильм!";
-        movieList.appendChild(li);
+    if (!movieList) {
+        console.error('Элемент movieList не найден в DOM.');
+        return;
     }
-}
 
-// Отображаем фильмы на странице оценки
-function displayMoviesForRating(movies) {
-    const movieRatingList = document.getElementById('movieRatingList');
-    movieRatingList.innerHTML = ''; // Очистка текущего списка
+    movieList.innerHTML = ''; // Очистка списка
 
     if (movies.length === 0) {
         const li = document.createElement('li');
-        li.textContent = 'Нет фильмов для оценки. Добавьте фильм на странице ввода!';
-        movieRatingList.appendChild(li);
+        li.textContent = 'Нет фильмов. Добавьте новый фильм!';
+        movieList.appendChild(li);
     } else {
         movies.forEach((movie, index) => {
             const li = document.createElement('li');
@@ -48,66 +49,77 @@ function displayMoviesForRating(movies) {
                 <br>
                 Оценка: <span id="rating-${index}">${movie.rating ? movie.rating : 'Не оценено'}</span>
                 <br>
-                <input type="number" min="1" max="10" id="input-${index}" placeholder="Оцените фильм">
-                <button onclick="rateMovie(${index}, '${movie.title}')">Отправить оценку</button>
+                <input 
+                    type="number" 
+                    min="1" 
+                    max="10" 
+                    id="input-${index}" 
+                    placeholder="Оцените фильм" 
+                    aria-label="Поле для оценки фильма ${movie.title}">
+                <button 
+                    onclick="rateMovie(${index}, '${movie.title}')" 
+                    aria-label="Оценить фильм ${movie.title}">Оценить</button>
+                <button 
+                    onclick="deleteMovie(${index})" 
+                    class="delete-btn" 
+                    aria-label="Удалить фильм ${movie.title}">Удалить</button>
             `;
-            movieRatingList.appendChild(li);
+            movieList.appendChild(li);
         });
     }
 }
 
-// Функция для добавления фильма
-document.addEventListener("DOMContentLoaded", function () {
-    const movieForm = document.getElementById('movieForm');
-    console.log(movieForm); // Проверка, что форма существует
+// Добавление нового фильма
+function addMovie(movie) {
+    fetch('/api/movies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(movie),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Ошибка при добавлении фильма');
+            }
+            return response.json();
+        })
+        .then(() => fetchMovies()) // Обновляем список фильмов
+        .catch((error) => console.error('Ошибка при добавлении фильма:', error));
+}
 
-    if (movieForm) {
-        movieForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+// Удаление фильма
+function deleteMovie(index) {
+    fetch(`/api/movies/${index}`, {
+        method: 'DELETE',
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Ошибка при удалении фильма');
+            }
+            fetchMovies(); // Обновляем список фильмов
+        })
+        .catch((error) => console.error('Ошибка при удалении фильма:', error));
+}
 
-            const title = document.getElementById('movieTitle').value;
-            const description = document.getElementById('movieDescription').value;
-
-            // Отправляем запрос на сервер для добавления фильма
-            fetch('/api/movies', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title, description })
-            })
-            .then(response => response.json())
-            .then(movie => {
-                alert('Фильм добавлен!');
-                loadMovies(); // Перезагружаем список фильмов
-            })
-            .catch(error => console.error('Ошибка добавления фильма:', error));
-        });
-    }
-
-    // Загружаем фильмы при старте
-    loadMovies(); // Загружаем фильмы при загрузке страницы
-});
-
-// Функция для оценки фильма
+// Оценка фильма
 function rateMovie(index, title) {
-    const ratingInput = document.getElementById(`input-${index}`);
-    const rating = ratingInput.value;
+    const input = document.getElementById(`input-${index}`);
+    const rating = input.value;
 
-    if (rating >= 1 && rating <= 10) {
-        fetch(`/api/movies/${index}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ rating })
-        })
-        .then(response => response.json())
-        .then(updatedMovie => {
-            document.getElementById(`rating-${index}`).textContent = updatedMovie.rating;
-        })
-        .catch(error => console.error('Ошибка обновления рейтинга:', error));
-    } else {
-        alert('Введите корректную оценку (от 1 до 10)');
+    if (!rating || rating < 1 || rating > 10) {
+        alert(`Введите корректную оценку для фильма "${title}" (от 1 до 10).`);
+        return;
     }
+
+    fetch(`/api/movies/${index}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating }),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Ошибка при обновлении оценки фильма');
+            }
+            fetchMovies(); // Обновляем список фильмов
+        })
+        .catch((error) => console.error('Ошибка при обновлении оценки фильма:', error));
 }

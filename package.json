@@ -1,16 +1,14 @@
 {
     "name": "movie-rating",
     "version": "1.0.0",
-    "description": "Сайт для ввода и оценки фильма",
+    "description": "Простой веб-приложение для управления фильмами",
     "main": "server/server.js",
     "scripts": {
-        "start": "node server/server.js"
+      "start": "node server/server.js"
     },
     "dependencies": {
-        "body-parser": "^1.20.3",
-        "express": "^4.21.1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
-}
+      "body-parser": "^1.20.2",
+      "express": "^4.18.2"
+    }
+  }
+  
