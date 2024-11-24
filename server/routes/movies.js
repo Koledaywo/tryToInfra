@@ -1,7 +1,32 @@
 const express = require('express');
-const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 
-let movies = [];
+const router = express.Router();
+const moviesFilePath = path.join(__dirname, '../../data/movies.json');
+
+// Функция для чтения данных из файла
+const readMoviesFromFile = () => {
+    try {
+        const data = fs.readFileSync(moviesFilePath, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Ошибка чтения файла с фильмами:', error);
+        return [];
+    }
+};
+
+// Функция для записи данных в файл
+const writeMoviesToFile = (movies) => {
+    try {
+        fs.writeFileSync(moviesFilePath, JSON.stringify(movies, null, 2), 'utf8');
+    } catch (error) {
+        console.error('Ошибка записи файла с фильмами:', error);
+    }
+};
+
+// Инициализация фильмов
+let movies = readMoviesFromFile();
 
 // Получить список фильмов
 router.get('/', (req, res) => {
@@ -14,7 +39,8 @@ router.post('/', (req, res) => {
     if (!title || !description) {
         return res.status(400).json({ error: 'Название и описание обязательны' });
     }
-    movies.push({ title, description });
+    movies.push({ title, description, rating: null });
+    writeMoviesToFile(movies); // Сохраняем изменения
     res.status(201).json({ message: 'Фильм добавлен' });
 });
 
@@ -25,6 +51,7 @@ router.delete('/:index', (req, res) => {
         return res.status(404).json({ error: 'Фильм не найден' });
     }
     movies.splice(index, 1);
+    writeMoviesToFile(movies); // Сохраняем изменения
     res.json({ message: 'Фильм удален' });
 });
 
@@ -38,6 +65,7 @@ router.put('/:index', (req, res) => {
     }
 
     movies[index].rating = rating;
+    writeMoviesToFile(movies); // Сохраняем изменения
     res.json({ message: 'Оценка обновлена' });
 });
 
