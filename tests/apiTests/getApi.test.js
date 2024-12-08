@@ -2,16 +2,32 @@ const { test, expect } = require('@playwright/test');
 const getMovies = require('./utils/apiUtils');
 const validateMovie = require('./utils/validateMovie');
 
-test('Простой тест на ручку ГЕТ', async ({ request }) => {
-  const { response, movies } = await getMovies(request);
+test('Проверка гет запроса api/movies', async ({ request }) => {
 
 
-  expect(response.status()).toBe(200);
+  let response;
+  let movies;
+  
+  await test.step('Отправить запрос к апи и получение переменных', async () => {
+    const result = await getMovies(request);
+    response = result.response;
+    movies = result.movies;
+  });
 
 
-  expect(Array.isArray(movies)).toBeTruthy();
-  expect(movies.length).toBeGreaterThan(0);
+  await test.step('Проверка статус-кода', () => {
+    expect(response.status()).toBe(200);
+  });
 
 
-  movies.forEach(movie => validateMovie(movie));
+  await test.step('Проверка что массив не пустой и он есть', () => {
+    expect(Array.isArray(movies)).toBeTruthy();
+    expect(movies.length).toBeGreaterThan(0);
+  });
+
+
+  await test.step('Проверка ключей у каждого фильма', () => {
+    movies.forEach(movie => validateMovie(movie));
+  });
+
 });
