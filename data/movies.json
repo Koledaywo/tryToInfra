@@ -12,7 +12,7 @@
   {
     "title": "Крестный отец",
     "description": "Стареющий глава мафиозной семьи передает управление своему неохотному сыну.",
-    "rating": 2
+    "rating": "3"
   },
   {
     "title": "Криминальное чтиво",
@@ -20,18 +20,8 @@
     "rating": 3
   },
   {
-    "title": "галава",
+    "title": "123",
     "description": "123",
-    "rating": "9"
-  },
-  {
-    "title": "лула",
-    "description": "лалыал",
-    "rating": null
-  },
-  {
-    "title": "2",
-    "description": "2",
     "rating": null
   }
 ]

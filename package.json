@@ -1,13 +1,19 @@
 {
-    "name": "movie-rating",
-    "version": "1.0.0",
-    "description": "Простой веб-приложение для управления фильмами",
-    "main": "server/server.js",
-    "scripts": {
-        "start": "node server/server.js"
-    },
-    "dependencies": {
-        "body-parser": "^1.20.2",
-        "express": "^4.21.1"
-    }
+  "name": "movie-rating",
+  "version": "1.0.0",
+  "description": "Простой веб-приложение для управления фильмами",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.1"
+  }
+
 }
