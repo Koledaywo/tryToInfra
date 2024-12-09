@@ -9,3 +9,5 @@ frontend/build/
 /blob-report/
 /playwright/.cache/
 /.github/
+/allure-report/
+/allure-results/
