@@ -15,13 +15,58 @@
     "rating": "3"
   },
   {
-    "title": "Криминальное чтиво",
-    "description": "История переплетенных жизней преступников в Лос-Анджелесе.",
-    "rating": 3
+    "title": "Шматрица",
+    "description": "ну тут такое тыщ пыщ",
+    "rating": null
+  },
+  {
+    "title": "Шматрица",
+    "description": "ну тут такое тыщ пыщ",
+    "rating": 8
   },
   {
     "title": "123",
     "description": "123",
-    "rating": null
+    "rating": "1"
+  },
+  {
+    "title": "123",
+    "description": "123",
+    "rating": "1"
+  },
+  {
+    "title": "Шматрица",
+    "description": "ну тут такое тыщ пыщ",
+    "rating": 7
+  },
+  {
+    "title": "Шматрица",
+    "description": "ну тут такое тыщ пыщ",
+    "rating": 7
+  },
+  {
+    "title": "Шматрица",
+    "description": "ну тут такое тыщ пыщ",
+    "rating": 7
+  },
+  {
+    "title": "mollitia nostrum",
+    "description": "Bis aetas voluptates cedo similique maxime degusto careo.",
+    "rating": 10
+  },
+  {
+    "title": "aduro arto",
+    "description": "Laudantium pectus ascisco patrocinor campana bis cernuus atrocitas vox vereor.",
+    "rating": 6
+  },
+  {
+    "title": "id curto",
+    "description": "Arx vivo acerbitas corporis.",
+    "rating": 1
+  },
+  {
+    "title": "avarus viridis",
+    "description": "Paens conicio temptatio coerceo amita pauci tametsi autus advenio.",
+    "rating": 8
   }
 ]

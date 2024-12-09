@@ -1,0 +1,1 @@
+[{"uid":"38f09f9d8206eb75","name":"Проверка гет запроса api/movies","time":{"start":1733768463233,"stop":1733768463271,"duration":38},"status":"passed","severity":"normal"},{"uid":"75065f281daec74e","name":"Успешное добавление фильма с валидными данными","time":{"start":1733768463300,"stop":1733768463318,"duration":18},"status":"passed","severity":"normal"}]
