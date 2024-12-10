@@ -1,11 +1,12 @@
-module.exports = {
-  extends: ["eslint:recommended"],
+import { defineConfig } from 'eslint-define-config';
+
+export default defineConfig({
   env: {
     node: true,
-    es2021: true
+    es2021: true,
   },
   rules: {
-    "no-console": "warn",
-    "no-unused-vars": "warn"
-  }
-};
+    'no-console': 'warn',
+    'no-unused-vars': 'warn',
+  },
+});
