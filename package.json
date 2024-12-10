@@ -1,7 +1,7 @@
 {
   "name": "movie-rating",
   "version": "1.0.0",
-  "description": "Простой веб-приложение для управления фильмами",
+  "description": "Простое веб-приложение для управления фильмами",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
@@ -20,5 +20,6 @@
     "@types/node": "^22.10.1",
     "eslint": "^9.16.0",
     "nodemon": "^3.1.7"
-  }
+  },
+  "type": "module"
 }

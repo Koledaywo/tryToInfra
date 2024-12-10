@@ -1,6 +1,4 @@
-import { defineConfig } from 'eslint-define-config';
-
-export default defineConfig({
+module.exports = {
   env: {
     node: true,
     es2021: true,
@@ -9,4 +7,4 @@ export default defineConfig({
     'no-console': 'warn',
     'no-unused-vars': 'warn',
   },
-});
+};
