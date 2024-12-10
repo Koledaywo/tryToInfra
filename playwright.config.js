@@ -1,7 +1,7 @@
-// @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+// playwright.config.js
+import { defineConfig, devices } from '@playwright/test';
 
-module.exports = defineConfig({
+export default defineConfig({
   testDir: './tests/apiTests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -9,7 +9,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['html'],
-    ['allure-playwright'], //алюр отчёт, вместо дефолтного
+    ['allure-playwright'], // Allure отчет вместо дефолтного        
   ],
   use: {
     baseURL: 'http://localhost:3000',
@@ -30,4 +30,3 @@ module.exports = defineConfig({
     // },
   ],
 });
-
