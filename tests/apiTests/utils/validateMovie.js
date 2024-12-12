@@ -1,9 +1,6 @@
-const { expect } = require('@playwright/test');
-
-function validateMovie(movie) {
-  expect(movie).toHaveProperty('description');
-  expect(movie).toHaveProperty('rating');
-  expect(movie).toHaveProperty('title');
+export default function validateMovie(movie) {
+  if (!movie.title || !movie.description || !movie.rating) {
+    console.error('Invalid movie:', movie);
+    throw new Error('Некорректный формат фильма');
+  }
 }
-
-module.exports = validateMovie;

@@ -15,11 +15,6 @@
     "rating": "3"
   },
   {
-    "title": "Шматрица",
-    "description": "ну тут такое тыщ пыщ",
-    "rating": null
-  },
-  {
     "title": "123",
     "description": "123",
     "rating": "1"
@@ -33,5 +28,55 @@
     "title": "Шматрица",
     "description": "ну тут такое тыщ пыщ",
     "rating": 7
+  },
+  {
+    "title": "itaque amplitudo",
+    "description": "Territo currus utroque vulgaris cubo deludo vilitas temptatio vesco ventito.",
+    "rating": 8
+  },
+  {
+    "title": "curia compello",
+    "description": "Denique crustulum tutamen derideo ex cunae deleo.",
+    "rating": 4
+  },
+  {
+    "title": "eligendi amitto",
+    "description": "Creo sed statua.",
+    "rating": 6
+  },
+  {
+    "title": "terra utique",
+    "description": "Aperte cohibeo auxilium vereor depromo vilicus.",
+    "rating": 4
+  },
+  {
+    "title": "annus textilis",
+    "description": "Ad minima itaque voluptates.",
+    "rating": 1
+  },
+  {
+    "title": "spes deleniti",
+    "description": "Delibero terror molestias arbustum sublime vulgo.",
+    "rating": 3
+  },
+  {
+    "title": "curis cedo",
+    "description": "Censura tendo ipsa usus cunabula sophismata.",
+    "rating": 7
+  },
+  {
+    "title": "aetas explicabo",
+    "description": "Deorsum depopulo tantum bardus exercitationem dolores approbo alii tergeo deporto.",
+    "rating": 9
+  },
+  {
+    "title": "comitatus decretum",
+    "description": "Decipio aveho tremo tamisium aetas tergo.",
+    "rating": 10
+  },
+  {
+    "title": "dapifer vulgivagus",
+    "description": "Amicitia vulgus deleniti somniculosus acerbitas.",
+    "rating": 1
   }
 ]
