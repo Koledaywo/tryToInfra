@@ -1,9 +1,9 @@
-const express = require('express');
-const moviesRoutes = require('./movies');
+import express from 'express';
+import moviesRoutes from './movies';
 
 const router = express.Router();
 
 // Подключение маршрутов
 router.use('/movies', moviesRoutes);
 
-module.exports = router;
+export default router;

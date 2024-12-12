@@ -1,6 +1,6 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
 const moviesFilePath = path.join(__dirname, '../../data/movies.json');
@@ -73,4 +73,4 @@ router.put('/:index', (req, res) => {
     res.json({ message: 'Оценка обновлена' });
 });
 
-module.exports = router;
+export default router;

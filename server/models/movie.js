@@ -1,4 +1,3 @@
-// Пока модель простая, но можно подключить MongoDB или Sequelize
 class Movie {
     constructor(title, description, rating = null) {
         this.title = title;
@@ -7,4 +6,4 @@ class Movie {
     }
 }
 
-module.exports = Movie;
+export default Movie;
