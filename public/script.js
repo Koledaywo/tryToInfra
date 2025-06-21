@@ -52,7 +52,16 @@ async function fetchMovies(append = false) {
         const genre = genreFilter.value !== 'all' ? `&genre=${genreFilter.value}` : '';
         
         const response = await fetch(`/api/movies?page=${currentPage}&limit=10${genre}`);
+        if (!response.ok) {
+            throw new Error('Ошибка при получении фильмов');
+        }
+        
         const data = await response.json();
+        
+        // Проверяем структуру ответа
+        if (!data.movies || !Array.isArray(data.movies)) {
+            throw new Error('Некорректный формат данных от сервера');
+        }
         
         if (!append) {
             document.getElementById('movieList').innerHTML = '';
@@ -62,13 +71,11 @@ async function fetchMovies(append = false) {
             displayMovie(movie);
         });
 
-        totalPages = data.totalPages;
+        totalPages = data.totalPages || 1;
         loadMoreBtn.style.display = currentPage < totalPages ? 'block' : 'none';
-        
-        showNotification('Фильмы загружены успешно', 'success');
     } catch (error) {
         console.error('Ошибка при получении фильмов:', error);
-        showNotification('Ошибка при загрузке фильмов', 'error');
+        showNotification(error.message, 'error');
     }
 }
 
@@ -81,7 +88,7 @@ async function handleMovieSubmit(event) {
         description: formData.get('description').trim(),
         genre: formData.get('genre'),
         releaseDate: formData.get('releaseDate'),
-        rating: formData.get('rating') ? Number(formData.get('rating')) : null
+        rating: formData.get('rating') ? Number(formData.get('rating')) : 1
     };
 
     try {
@@ -94,13 +101,19 @@ async function handleMovieSubmit(event) {
         const data = await response.json();
         
         if (!response.ok) {
+            if (data.errors) {
+                const errorMessages = data.errors.map(err => `${err.msg}`).join('\n');
+                throw new Error(errorMessages);
+            }
             throw new Error(data.error || 'Ошибка при добавлении фильма');
         }
 
         event.target.reset();
-        currentPage = 1;
-        fetchMovies();
         showNotification('Фильм успешно добавлен', 'success');
+        
+        // Перезагружаем первую страницу
+        currentPage = 1;
+        await fetchMovies();
     } catch (error) {
         console.error('Ошибка при добавлении фильма:', error);
         showNotification(error.message, 'error');

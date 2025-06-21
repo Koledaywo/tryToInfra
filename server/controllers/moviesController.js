@@ -2,24 +2,30 @@ import Movie from '../models/movie.js';
 
 export const getMovies = async (req, res) => {
     try {
-        const { page = 1, limit = 10, genre, sort = 'createdAt' } = req.query;
+        const { page = 1, limit = 10, genre, sort = '-createdAt' } = req.query;
         const query = genre ? { genre, isDeleted: false } : { isDeleted: false };
         
         const movies = await Movie.find(query)
             .sort(sort)
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
+            .limit(Number(limit))
+            .skip((Number(page) - 1) * Number(limit))
             .exec();
 
         const count = await Movie.countDocuments(query);
         
         res.json({
             movies,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
+            total: count,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(count / limit)
         });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении фильмов' });
+        console.error('Error in getMovies:', error);
+        res.status(500).json({ 
+            error: 'Ошибка при получении фильмов',
+            details: error.message 
+        });
     }
 };
 
@@ -37,17 +43,42 @@ export const getDeletedMovies = async (req, res) => {
 
 export const addMovie = async (req, res) => {
     try {
-        const movie = new Movie(req.body);
+        // Устанавливаем значения по умолчанию
+        const movieData = {
+            ...req.body,
+            rating: req.body.rating || 1,
+            releaseDate: req.body.releaseDate || new Date().toISOString().split('T')[0]
+        };
+
+        const movie = new Movie(movieData);
         await movie.save();
-        res.status(201).json({ message: 'Фильм добавлен', movie });
+        res.status(201).json({ 
+            message: 'Фильм успешно добавлен', 
+            movie: {
+                _id: movie._id,
+                title: movie.title,
+                description: movie.description,
+                genre: movie.genre,
+                rating: movie.rating,
+                releaseDate: movie.releaseDate,
+                createdAt: movie.createdAt,
+                updatedAt: movie.updatedAt
+            }
+        });
     } catch (error) {
         if (error.name === 'ValidationError') {
             return res.status(400).json({ 
                 error: 'Ошибка валидации', 
-                details: Object.values(error.errors).map(err => err.message)
+                details: Object.values(error.errors).map(err => ({
+                    field: err.path,
+                    message: err.message
+                }))
             });
         }
-        res.status(500).json({ error: 'Ошибка при добавлении фильма' });
+        res.status(500).json({ 
+            error: 'Ошибка при добавлении фильма',
+            details: error.message 
+        });
     }
 };
 

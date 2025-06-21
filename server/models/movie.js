@@ -19,12 +19,12 @@ const movieSchema = new mongoose.Schema({
         type: Number,
         min: [1, 'Минимальная оценка - 1'],
         max: [10, 'Максимальная оценка - 10'],
-        default: null
+        default: 1
     },
     genre: {
         type: String,
-        enum: ['action', 'comedy', 'drama', 'horror', 'sci-fi', 'other'],
-        default: 'other'
+        enum: ['action', 'comedy', 'drama', 'horror', 'thriller', 'sci-fi', 'documentary'],
+        required: [true, 'Жанр фильма обязателен']
     },
     releaseDate: {
         type: Date,
@@ -41,6 +41,21 @@ const movieSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    }
+});
+
+// Добавляем виртуальное поле для форматированной даты
+movieSchema.virtual('formattedReleaseDate').get(function() {
+    return this.releaseDate.toISOString().split('T')[0];
+});
+
+// Настраиваем опции схемы
+movieSchema.set('toJSON', {
+    virtuals: true,
+    transform: function(doc, ret) {
+        ret.releaseDate = ret.formattedReleaseDate;
+        delete ret.formattedReleaseDate;
+        return ret;
     }
 });
 
