@@ -1,6 +1,18 @@
 let currentPage = 1;
 let totalPages = 1;
 
+// Объект для перевода жанров
+const genreTranslations = {
+    'action': 'Боевик',
+    'comedy': 'Комедия',
+    'drama': 'Драма',
+    'horror': 'Ужасы',
+    'thriller': 'Триллер',
+    'sci-fi': 'Научная фантастика',
+    'documentary': 'Документальный',
+    'other': 'Другое'
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const movieForm = document.getElementById('movieForm');
     const movieList = document.getElementById('movieList');
@@ -165,6 +177,11 @@ async function deleteMovie(id) {
 }
 
 async function updateRating(id, rating) {
+    if (!rating || rating < 1 || rating > 10) {
+        showNotification('Оценка должна быть от 1 до 10', 'error');
+        return;
+    }
+
     try {
         const response = await fetch(`/api/movies/${id}/rating`, {
             method: 'PUT',
@@ -174,6 +191,23 @@ async function updateRating(id, rating) {
 
         if (!response.ok) {
             throw new Error('Ошибка при обновлении оценки');
+        }
+
+        const data = await response.json();
+        
+        // Обновляем отображение рейтинга в DOM
+        const ratingElement = document.getElementById(`rating-${id}`);
+        if (ratingElement) {
+            ratingElement.textContent = rating;
+        }
+
+        // Очищаем поле ввода
+        const movieCard = ratingElement.closest('.movie-card');
+        if (movieCard) {
+            const ratingInput = movieCard.querySelector('.rating-input');
+            if (ratingInput) {
+                ratingInput.value = '';
+            }
         }
 
         showNotification('Оценка успешно обновлена', 'success');
@@ -194,11 +228,13 @@ function displayMovie(movie) {
         day: 'numeric'
     });
     
+    const translatedGenre = genreTranslations[movie.genre] || movie.genre;
+    
     movieElement.innerHTML = `
         <h3>${movie.title}</h3>
         <p>${movie.description}</p>
         <div class="movie-meta">
-            <span class="genre ${movie.genre}">${movie.genre}</span>
+            <span class="genre ${movie.genre}">${translatedGenre}</span>
             <span class="rating">
                 Оценка: <span id="rating-${movie._id}">${movie.rating || 'Не оценено'}</span>
             </span>
