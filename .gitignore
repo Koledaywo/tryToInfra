@@ -1,13 +1,63 @@
+# Dependencies
 node_modules/
-.DS_Store
-frontend/node_modules/
-backend/node_modules/
-frontend/build/
+package-lock.json
+
+# Environment variables
 .env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
 /allure-report/
 /allure-results/
+coverage/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+out/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+frontend/node_modules/
+backend/node_modules/
+frontend/build/
