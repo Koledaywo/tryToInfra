@@ -1,41 +1,155 @@
-let movies = [
-    { title: 'Фильм 1', description: 'Описание фильма 1', rating: null },
-    { title: 'Фильм 2', description: 'Описание фильма 2', rating: null },
-    { title: 'Фильм 3', description: 'Описание фильма 3', rating: null },
-    { title: 'Фильм 4', description: 'Описание фильма 4', rating: null },
-    { title: 'Фильм 5', description: 'Описание фильма 5', rating: null },
-];
+import Movie from '../models/movie.js';
 
-exports.getMovies = (req, res) => {
-    res.json(movies);
-};
+export const getMovies = async (req, res) => {
+    try {
+        const { page = 1, limit = 10, genre, sort = 'createdAt' } = req.query;
+        const query = genre ? { genre, isDeleted: false } : { isDeleted: false };
+        
+        const movies = await Movie.find(query)
+            .sort(sort)
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
 
-exports.addMovie = (req, res) => {
-    const { title, description } = req.body;
-    const newMovie = { title, description, rating: null };
-    movies.push(newMovie);
-    res.status(201).json(newMovie);
-};
-
-exports.updateMovie = (req, res) => {
-    const index = req.params.index;
-    const { rating } = req.body;
-
-    if (movies[index]) {
-        movies[index].rating = rating;
-        res.json(movies[index]);
-    } else {
-        res.status(404).json({ message: 'Фильм не найден' });
+        const count = await Movie.countDocuments(query);
+        
+        res.json({
+            movies,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при получении фильмов' });
     }
 };
 
-exports.deleteMovie = (req, res) => {
-    const index = req.params.index;
+export const getDeletedMovies = async (req, res) => {
+    try {
+        const movies = await Movie.find({ isDeleted: true })
+            .sort('-deletedAt')
+            .exec();
+        
+        res.json({ movies });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при получении удаленных фильмов' });
+    }
+};
 
-    if (movies[index]) {
-        movies.splice(index, 1);
-        res.status(204).send();
-    } else {
-        res.status(404).json({ message: 'Фильм не найден' });
+export const addMovie = async (req, res) => {
+    try {
+        const movie = new Movie(req.body);
+        await movie.save();
+        res.status(201).json({ message: 'Фильм добавлен', movie });
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                error: 'Ошибка валидации', 
+                details: Object.values(error.errors).map(err => err.message)
+            });
+        }
+        res.status(500).json({ error: 'Ошибка при добавлении фильма' });
+    }
+};
+
+export const deleteMovie = async (req, res) => {
+    try {
+        const movie = await Movie.findByIdAndUpdate(
+            req.params.id,
+            { 
+                isDeleted: true,
+                deletedAt: new Date()
+            },
+            { new: true }
+        );
+
+        if (!movie) {
+            return res.status(404).json({ error: 'Фильм не найден' });
+        }
+        res.json({ message: 'Фильм перемещен в корзину' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при удалении фильма' });
+    }
+};
+
+export const restoreMovie = async (req, res) => {
+    try {
+        const movie = await Movie.findByIdAndUpdate(
+            req.params.id,
+            { 
+                isDeleted: false,
+                deletedAt: null
+            },
+            { new: true }
+        );
+
+        if (!movie) {
+            return res.status(404).json({ error: 'Фильм не найден' });
+        }
+        res.json({ message: 'Фильм восстановлен', movie });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при восстановлении фильма' });
+    }
+};
+
+export const permanentlyDeleteMovie = async (req, res) => {
+    try {
+        const movie = await Movie.findByIdAndDelete(req.params.id);
+        if (!movie) {
+            return res.status(404).json({ error: 'Фильм не найден' });
+        }
+        res.json({ message: 'Фильм удален навсегда' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при удалении фильма' });
+    }
+};
+
+export const updateMovieRating = async (req, res) => {
+    try {
+        const { rating } = req.body;
+        const movie = await Movie.findById(req.params.id);
+        
+        if (!movie) {
+            return res.status(404).json({ error: 'Фильм не найден' });
+        }
+
+        if (movie.isDeleted) {
+            return res.status(400).json({ error: 'Нельзя обновить рейтинг удаленного фильма' });
+        }
+
+        movie.rating = rating;
+        await movie.save();
+        
+        res.json({ message: 'Рейтинг обновлен', movie });
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                errors: Object.values(error.errors).map(err => ({
+                    field: err.path,
+                    message: err.message
+                }))
+            });
+        }
+        res.status(500).json({ error: 'Ошибка при обновлении рейтинга' });
+    }
+};
+
+export const searchMovies = async (req, res) => {
+    try {
+        const { query } = req.query;
+        const movies = await Movie.find({
+            $and: [
+                {
+                    $or: [
+                        { title: { $regex: query, $options: 'i' } },
+                        { description: { $regex: query, $options: 'i' } }
+                    ]
+                },
+                { isDeleted: false }
+            ]
+        }).limit(10);
+        
+        res.json(movies);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при поиске фильмов' });
     }
 };

@@ -3,29 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кинопоиск на коленке</title>
+    <title>Каталог фильмов</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Кинопоиск на коленке</h1>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1>Каталог фильмов</h1>
+                <a href="/trash.html" class="trash-link">
+                    <span class="trash-icon">🗑️</span>
+                    Корзина
+                </a>
+            </div>
+            <div class="search-filter">
+                <input type="text" 
+                    id="searchInput" 
+                    placeholder="Поиск фильмов..." 
+                    aria-label="Поиск фильмов">
+                <select id="genreFilter" aria-label="Фильтр по жанру">
+                    <option value="all">Все жанры</option>
+                    <option value="action">Боевик</option>
+                    <option value="comedy">Комедия</option>
+                    <option value="drama">Драма</option>
+                    <option value="horror">Ужасы</option>
+                    <option value="sci-fi">Научная фантастика</option>
+                    <option value="other">Другое</option>
+                </select>
+            </div>
+        </header>
 
-    <form id="movieForm" aria-label="Форма добавления фильма">
-        <label for="movieTitle">Название фильма: </label>
-        <input type="text" id="movieTitle" name="movieTitle" required aria-label="Название фильма">
+        <main>
+            <section class="add-movie">
+                <h2>Добавить новый фильм</h2>
+                <form id="movieForm">
+                    <div class="form-group">
+                        <label for="title">Название:</label>
+                        <input type="text" 
+                            id="title" 
+                            name="title" 
+                            required 
+                            minlength="2"
+                            maxlength="100"
+                            placeholder="Введите название фильма">
+                    </div>
 
-        <label for="movieDescription">Описание:</label>
-        <textarea id="movieDescription" name="movieDescription" required aria-label="Описание фильма"></textarea>
+                    <div class="form-group">
+                        <label for="description">Описание:</label>
+                        <textarea id="description" 
+                            name="description" 
+                            required 
+                            minlength="10"
+                            maxlength="1000"
+                            placeholder="Введите описание фильма"></textarea>
+                    </div>
 
-        <label for="movieRating">Рейтинг (от 1 до 10):</label>
-        <input type="number" id="movieRating" name="movieRating" min="1" max="10" aria-label="Рейтинг фильма">
+                    <div class="form-group">
+                        <label for="genre">Жанр:</label>
+                        <select id="genre" name="genre" required>
+                            <option value="action">Боевик</option>
+                            <option value="comedy">Комедия</option>
+                            <option value="drama">Драма</option>
+                            <option value="horror">Ужасы</option>
+                            <option value="sci-fi">Научная фантастика</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
 
-        <button type="submit" aria-label="Добавить фильм">Добавить фильм</button>
-    </form>
+                    <div class="form-group">
+                        <label for="releaseDate">Дата выхода:</label>
+                        <input type="text" 
+                            id="releaseDate" 
+                            name="releaseDate" 
+                            required 
+                            placeholder="Выберите дату">
+                    </div>
 
-    <h2>Список фильмов</h2>
-    <ul id="movieList" aria-label="Список фильмов"></ul>
+                    <div class="form-group">
+                        <label for="rating">Оценка (необязательно):</label>
+                        <input type="number" 
+                            id="rating" 
+                            name="rating" 
+                            min="1" 
+                            max="10" 
+                            placeholder="От 1 до 10">
+                    </div>
 
+                    <button type="submit">Добавить фильм</button>
+                </form>
+            </section>
 
-    <script type="module" src="script.js" defer></script>
+            <section class="movie-list">
+                <h2>Список фильмов</h2>
+                <div id="movieList" class="movie-grid"></div>
+                <button id="loadMoreBtn" class="load-more">Загрузить еще</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
