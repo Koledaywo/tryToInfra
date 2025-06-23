@@ -4,7 +4,7 @@ import config from './config/config.js';
 
 async function updateExistingMovies() {
     try {
-        await mongoose.connect(config.mongoUri);
+        await mongoose.connect(config.mongoUri);git 
         console.log('Connected to MongoDB');
 
         // Найти все фильмы без даты выхода
